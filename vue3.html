@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-
-
 </head>
 
 <body>
@@ -27,8 +25,6 @@
         </div>
 
         <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.taskId}} {{" | "}} {{task.text}} {{" | "}} {{task.deadline}} {{" | "}} {{task.isCompleted}}
-
-            <br>
             <br>
             <p>Time left: {{ millisecondsToHuman(new Date(task.deadline).getTime() - (new Date().getTime()))}}</p>
 
@@ -36,16 +32,17 @@
 
             <button @click="deleteTask(task.taskId)">delete</button>
 
-            <button @click="task.isEdited=!task.isEdited">Edit</button>
+            <button @click="task.isEdited=!task.isEdited">edit</button>
             <div v-if="task.isEdited">
                 <input @keyup.enter="edit(task)" @keyup.esc="task.isEdited=!task.isEdited"
                     v-model.trim="task.editValue">
                 <button @click="edit(task)">Save</button>
-                <button @click="task.isEdited=!task.isEdited">Undo</button>
+                <button @click="task.isEdited=!task.isEdited">undo</button>
             </div>
 
         </div>
     </div>
+
     <script>
         const { createApp, ref } = Vue;
         createApp({
@@ -61,7 +58,6 @@
                                 isCompleted: true,
                                 isEdited: false,
                                 editValue: '',
-                                time: 'time example',
                                 deadline: '2024-01-01',
                             }
                         ],
@@ -76,7 +72,6 @@
 
             methods: {
                 addTask() {
-                    const t = new Date();
                     const newTask = {
                         number: this.tasks.length,
                         taskId: Date.now(),
@@ -84,7 +79,6 @@
                         isCompleted: this.isCompleted,
                         isEdited: this.isEdited,
                         editValue: this.text,
-                        time: t.toISOString(),
                         deadline: this.deadline,
                     }
                     if (this.text !== '') {
