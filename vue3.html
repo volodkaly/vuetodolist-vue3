@@ -7,7 +7,7 @@
     <title>Document</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-    
+
 </head>
 
 <body>
@@ -17,17 +17,16 @@
         <input @keyup.enter="addTask()" v-model.trim="text" maxlength="200">
         <br>
         Deadline:
-        <input type="date" v-model.trim="deadline" min="2023-01-01">
+        <input type="date" v-model.trim="deadline" :min="today">
         <br>
 
         <button @click="addTask()">add task</button>
         <br>
-        <div>{{"#"}} {{" | "}} {{"task ID"}} {{" | "}} {{"task user text"}} {{" | "}} 
+        <div>{{"#"}} {{" | "}} {{"task ID"}} {{" | "}} {{"task user text"}} {{" | "}}
             {{"task status"}} {{" | "}} {{"time left"}}
         </div>
 
-        <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.taskId}} {{" | "}} {{task.text}} {{" | "}} {{task.time}} {{' | '}} {{task.timeLeft}} {{' | '}}
-            {{task.deadline}} {{" | "}} {{task.isCompleted}} 
+        <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.taskId}} {{" | "}} {{task.text}} {{" | "}} {{task.deadline}} {{" | "}} {{task.isCompleted}}
 
             <br>
             <br>
@@ -52,7 +51,7 @@
         createApp({
             data() {
                 return {
-                    currentTime: new Date().toLocaleString(),
+                    today: new Date().toISOString().slice(0, 10),
                     tasks:
                         [
                             {
@@ -67,14 +66,14 @@
                             }
                         ],
                 }
-                
+
             },
             mounted() {
-    setInterval(() => {
-      this.$forceUpdate(); // Force the component to re-render every second
-    }, 1000);
-  },
-            
+                setInterval(() => {
+                    this.$forceUpdate(); // Force the component to re-render every second
+                }, 1000);
+            },
+
             methods: {
                 addTask() {
                     const t = new Date();
@@ -106,14 +105,14 @@
                     task.isEdited = false;
                 },
 
-               millisecondsToHuman(milliseconds) {
-  const seconds = Math.floor((milliseconds / 1000) % 60);
-  const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
-  const hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
-  const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
+                millisecondsToHuman(milliseconds) {
+                    const seconds = Math.floor((milliseconds / 1000) % 60);
+                    const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
+                    const hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
+                    const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
 
-  return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-}
+                    return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                }
 
             }
         }).mount('#app')
