@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    
 </head>
 
 <body>
@@ -14,17 +16,26 @@
         <h1>Type in your task here:</h1>
         <input @keyup.enter="addTask()" v-model.trim="text" maxlength="200">
         <br>
+        Deadline:
+        <input type="date" v-model.trim="deadline" min="2023-01-01">
+        <br>
 
         <button @click="addTask()">add task</button>
         <br>
-        <div>{{"#"}} {{" | "}} {{"task unique timestamp code"}} {{" | "}} {{"task user text"}} {{" | "}} {{"task status"}}
+        <div>{{"#"}} {{" | "}} {{"task ID"}} {{" | "}} {{"task user text"}} {{" | "}} 
+            {{"task status"}} {{" | "}} {{"time left"}}
         </div>
 
-        <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.timestamp}} {{" | "}} {{task.text}} {{" | "}}
-            {{task.isCompleted}}
+        <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.taskId}} {{" | "}} {{task.text}} {{" | "}} {{task.time}} {{' | '}} {{task.timeLeft}} {{' | '}}
+            {{task.deadline}} {{" | "}} {{task.isCompleted}} 
+
+            <br>
+            <br>
+            <p>Time left: {{ millisecondsToHuman(new Date(task.deadline).getTime() - (new Date().getTime()))}}</p>
+
             <input type="checkbox" v-model="task.isCompleted">
-            
-            <button @click="deleteTask(task.timestamp)">delete</button>
+
+            <button @click="deleteTask(task.taskId)">delete</button>
 
             <button @click="task.isEdited=!task.isEdited">Edit</button>
             <div v-if="task.isEdited">
@@ -37,39 +48,45 @@
         </div>
     </div>
     <script>
-const {createApp,ref} = Vue;
+        const { createApp, ref } = Vue;
         createApp({
-            data () {
+            data() {
                 return {
-                tasks: 
-                    [
-                        {
-                            number: 0,
-                            timestamp: 1111111111111,
-                            text: 'task text example',
-                            isCompleted: true,
-                            isEdited: false,
-                            editValue: '',
-                        }
-                    ]
-                    }
-            } 
-        
-            ,
+                    currentTime: new Date().toLocaleString(),
+                    tasks:
+                        [
+                            {
+                                number: 0,
+                                taskId: 1111111111111,
+                                text: 'task text example',
+                                isCompleted: true,
+                                isEdited: false,
+                                editValue: '',
+                                time: 'time example',
+                                deadline: '2024-01-01',
+                            }
+                        ],
+                }
+                
+            },
+            mounted() {
+    setInterval(() => {
+      this.$forceUpdate(); // Force the component to re-render every second
+    }, 1000);
+  },
+            
             methods: {
-                getCurrentTime() {
-                    const currentDate = new Date();
-                    this.timestamp = currentDate.getTime();
-                    return this.timestamp;
-                },
                 addTask() {
+                    const t = new Date();
                     const newTask = {
                         number: this.tasks.length,
-                        timestamp: this.getCurrentTime(),
+                        taskId: Date.now(),
                         text: this.text,
                         isCompleted: this.isCompleted,
                         isEdited: this.isEdited,
-                        editValue: this.text
+                        editValue: this.text,
+                        time: t.toISOString(),
+                        deadline: this.deadline,
                     }
                     if (this.text !== '') {
                         this.tasks.push(newTask);
@@ -81,13 +98,22 @@ const {createApp,ref} = Vue;
                     }
 
                 },
-                deleteTask(timestamp) {
-                    this.tasks = this.tasks.filter(task => task.timestamp !== timestamp);
+                deleteTask(taskId) {
+                    this.tasks = this.tasks.filter(task => task.taskId !== taskId);
                 },
                 edit(task) {
                     task.text = task.editValue;
                     task.isEdited = false;
                 },
+
+               millisecondsToHuman(milliseconds) {
+  const seconds = Math.floor((milliseconds / 1000) % 60);
+  const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
+  const hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
+
+  return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+}
 
             }
         }).mount('#app')
