@@ -12,21 +12,21 @@
 
     <div id="app">
         <h1>Type in your task here:</h1>
-        <input @keyup.enter="addTask()" v-model.trim="text" maxlength="200">
+        <input @keyup.enter="addTask()" v-model.trim="text" maxlength="200" required>
         <br>
         Deadline:
-        <input type="date" v-model.trim="deadline" :min="today">
+        <input type="date" v-model.trim="deadline" :min="today" required>
         <br>
 
         <button @click="addTask()">add task</button>
         <br>
         <div>{{"#"}} {{" | "}} {{"task ID"}} {{" | "}} {{"task user text"}} {{" | "}}
-            {{"task status"}} {{" | "}} {{"time left"}}
+            {{"task status"}}
         </div>
 
-        <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.taskId}} {{" | "}} {{task.text}} {{" | "}} {{task.deadline}} {{" | "}} {{task.isCompleted}}
+        <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.taskId}} {{" | "}} {{task.text}} {{" | "}} {{task.isCompleted}}
             <br>
-            <p>Time left: {{ millisecondsToHuman(new Date(task.deadline).getTime() - (new Date().getTime()))}}</p>
+            <p>Time left: {{ getTimeLeft(task.deadline)}}</p>
 
             <input type="checkbox" v-model="task.isCompleted">
 
@@ -36,7 +36,7 @@
             <div v-if="task.isEdited">
                 <input @keyup.enter="edit(task)" @keyup.esc="task.isEdited=!task.isEdited"
                     v-model.trim="task.editValue">
-                <button @click="edit(task)">Save</button>
+                <button @click="edit(task)">save</button>
                 <button @click="task.isEdited=!task.isEdited">undo</button>
             </div>
 
@@ -57,7 +57,7 @@
                                 text: 'task text example',
                                 isCompleted: true,
                                 isEdited: false,
-                                editValue: '',
+                                editValue: 'Initial task',
                                 deadline: '2024-01-01',
                             }
                         ],
@@ -71,7 +71,9 @@
             },
 
             methods: {
+              
                 addTask() {
+                    if (this.text !== '' && this.text.length !== 0 && this.deadline !== '' && this.deadline.length !== 0) {
                     const newTask = {
                         number: this.tasks.length,
                         taskId: Date.now(),
@@ -81,13 +83,14 @@
                         editValue: this.text,
                         deadline: this.deadline,
                     }
-                    if (this.text !== '') {
+                   
                         this.tasks.push(newTask);
                         this.text = '';
+                        this.deadline = '';
 
                     }
                     else {
-                        alert('error: task text field cannot be empty')
+                        alert('error: task text and deadline cannot be empty')
                     }
 
                 },
@@ -99,14 +102,22 @@
                     task.isEdited = false;
                 },
 
-                millisecondsToHuman(milliseconds) {
-                    const seconds = Math.floor((milliseconds / 1000) % 60);
-                    const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
-                    const hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
-                    const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
+                getTimeLeft(deadline) {
+            const timeDifference = new Date(deadline).getTime() - new Date().getTime();
 
-                    return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-                }
+            const seconds = Math.floor((timeDifference / 1000) % 60);
+            const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+            const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24) % 30);
+            const months = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 30) % 12);
+            const years = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 30 * 12));
+                    if (timeDifference>0){
+            return `${years} years, ${months} months, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                    }
+                    else {
+                        return 'time is over!'
+                    }
+        },
 
             }
         }).mount('#app')
