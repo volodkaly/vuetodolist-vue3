@@ -11,6 +11,7 @@
 <body>
 
     <div id="app">
+
         <h1>Type in your task here:</h1>
         <input @keyup.enter="addTask()" v-model.trim="text" maxlength="200" required>
         <br>
@@ -24,10 +25,11 @@
             {{"task status"}}
         </div>
 
+        
+
         <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.taskId}} {{" | "}} {{task.text}} {{" | "}} {{task.isCompleted}}
             <br>
-            {{task.deadline}}
-            <br>
+            
             <p>Time left: {{ getTimeLeft(task.deadline)}}</p>
 
             <input type="checkbox" v-model="task.isCompleted">
@@ -52,6 +54,8 @@
             data() {
                 return {
                     today: new Date().toISOString().slice(0, 10),
+                    text: '', 
+                    deadline: '' ,
                     tasks:
                         [
                             {
@@ -69,7 +73,6 @@
 
             },
            
-
             methods: {
               
                 addTask() {
@@ -83,20 +86,26 @@
                         editValue: this.text,
                         deadline: this.deadline,
                         editDeadline: this.deadline,
-                    }
+                    };
+
                     if (this.text !== '' && this.text.length !== 0) {
                         this.tasks.push(newTask);
                         this.text = '';
                         this.deadline = '';
 
                     }
+
                     else {
                         alert('error: task text cannot be empty')
                     }
-
+                   
                 },
+                
                 deleteTask(taskId) {
                     this.tasks = this.tasks.filter(task => task.taskId !== taskId);
+                    this.tasks.forEach((task, index) => {
+        task.number = index; // Update the number property after deletion
+    });
                 },
                 edit(task) {
                     task.text = task.editValue;
@@ -105,6 +114,10 @@
                 },
 
                 getTimeLeft(deadline) {
+                    if (!deadline) {
+        return 'deadline was not set for this task';
+    }
+                    
             const timeDifference = new Date(deadline).getTime() - new Date().getTime();
 
             const seconds = Math.floor((timeDifference / 1000) % 60);
@@ -119,16 +132,15 @@
                     else {
                         return 'time is over!'
                     }
-                     
-        }
-
-
+                
+        },
             },
             mounted() {
+               
                 setInterval(() => {
-                    this.$forceUpdate(); // Force the component to re-render every second
+                   this.$forceUpdate(); // Force the component to re-render every second
                 }, 1000);
-        
+                
             },
         }).mount('#app')
     </script>
