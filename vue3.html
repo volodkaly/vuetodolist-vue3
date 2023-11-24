@@ -21,22 +21,30 @@
 
         <button @click="addTask()">add task</button>
         <br>
-        <div>{{"#"}} {{" | "}} {{"task ID"}} {{" | "}} {{"task user text"}} {{" | "}}
-            {{"task status"}}
+        <div>{{"#"}} {{" | "}} {{"task ID"}} {{" | "}} {{"task status"}} {{" | "}} {{"task user text"}}
+            
         </div>
-
+        <br>
         
 
-        <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.taskId}} {{" | "}} {{task.text}} {{" | "}} {{task.isCompleted}}
-            <br>
-            
-            <p>Time left: {{ getTimeLeft(task.deadline)}}</p>
-
-            <input type="checkbox" v-model="task.isCompleted">
+        <div v-for="task in tasks">
+            {{task.number}} {{" | "}} {{task.taskId}} 
+            <input type="checkbox" v-model="task.isCompleted"> 
+            {{task.isCompleted?'completed':'not completed'}}
+            <div v-if="task.isCompleted===true" style="display:none">
+            {{task.text}}
+            <div> Time left: {{ getTimeLeft(task.deadline)}} </div>
+        </div>
+        <div v-else :style="{}">
+            {{task.text}}
+            <div> Time left: {{ getTimeLeft(task.deadline)}} </div>
+        </div>
 
             <button @click="deleteTask(task.taskId)">delete</button>
-
+            
             <button @click="task.isEdited=!task.isEdited">edit</button>
+            <br>
+            <br>
             <div v-if="task.isEdited">
                 <input @keyup.enter="edit(task)" @keyup.esc="task.isEdited=!task.isEdited"
                     v-model.trim="task.editValue">
@@ -62,7 +70,7 @@
                                 number: 0,
                                 taskId: 1111111111111,
                                 text: 'task text example',
-                                isCompleted: true,
+                                isCompleted: false,
                                 isEdited: false,
                                 editValue: 'Initial task',
                                 deadline: '2024-02-24',
@@ -73,6 +81,7 @@
 
             },
            
+
             methods: {
               
                 addTask() {
@@ -88,6 +97,8 @@
                         editDeadline: this.deadline,
                     };
 
+                    
+                    
                     if (this.text !== '' && this.text.length !== 0) {
                         this.tasks.push(newTask);
                         this.text = '';
@@ -98,7 +109,6 @@
                     else {
                         alert('error: task text cannot be empty')
                     }
-                   
                 },
                 
                 deleteTask(taskId) {
