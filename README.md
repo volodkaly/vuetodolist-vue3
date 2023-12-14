@@ -1,4 +1,4 @@
 github pages hosting:
 
-https://github.com/volodkaly/vuetodolist-vue3.html
+https://volodkaly.github.io/vuetodolist-vue3/vue3.html
 
