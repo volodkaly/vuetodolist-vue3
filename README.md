@@ -7,10 +7,6 @@ Each task has a unique ID generated from the current timestamp.
 If a task is removed, the task numbers are automatically recalculated to keep them consistent.  
 The app also shows the **time left before the deadline** in real-time (up to seconds).
 
-
-
----
-
 ## ✨ Features
 - Add new tasks with text and deadline  
 - Mark tasks as complete/incomplete  
@@ -19,15 +15,11 @@ The app also shows the **time left before the deadline** in real-time (up to sec
 - Deadline countdown shown in **years, months, days, hours, minutes, seconds**  
 - Real-time countdown updates every second  
 
----
-
 ## 🛠️ Tech Stack
 - **Vue 3 (CDN build)**
 - **JavaScript**
 - **HTML5**
 - **CSS3**
-
----
 
 ## 🚀 How to Use
 1. Type a task in the input field  
@@ -37,7 +29,3 @@ The app also shows the **time left before the deadline** in real-time (up to sec
    - ✅ Checkbox (mark complete/incomplete)  
    - ✏️ Edit button (change text and deadline)  
    - ❌ Delete button (remove task and reindex list)  
-
----
-
-## 📂 Project Structure
