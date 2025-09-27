@@ -30,7 +30,7 @@
         <div v-for="task in tasks">
             {{task.number}} {{" | "}} {{task.taskId}} 
             <input type="checkbox" v-model="task.isCompleted"> 
-            {{task.isCompleted?'completed':'not completed'}}
+            {{task.isCompleted?'mark as incomplete':'mark as complete'}}
             <div v-if="task.isCompleted===true" style="display:none">
             {{task.text}}
             <div> Time left: {{ getTimeLeft(task.deadline)}} </div>
