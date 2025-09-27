@@ -1,4 +1,4 @@
-<h1>🔗 **Live Demo:** [Click here](https://volodkaly.github.io/vuetodolist-vue3/vue3.html)</h1>
+<h1>🔗 Live Demo: [Click here](https://volodkaly.github.io/vuetodolist-vue3/vue3.html)</h1>
 
 # Vue 3 To-Do List App
 
